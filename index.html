@@ -1442,7 +1442,57 @@
         transition-duration: 0.01ms !important;
       }
     }
-  </style>
+  
+/* ================= DORAEMON CELEBRATION ================= */
+
+#doraemonBox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99999;
+  display: none;
+  pointer-events: none;
+}
+
+#doraemonImg {
+  width: 140px;
+}
+
+.roam {
+  animation: roam 14s linear infinite;
+}
+
+.celebrate {
+  animation: roam 8s linear infinite, bounce 0.6s infinite alternate;
+}
+
+@keyframes roam {
+  0%   { transform: translate(0,0); }
+  20%  { transform: translate(70vw,10vh); }
+  40%  { transform: translate(50vw,70vh); }
+  60%  { transform: translate(10vw,60vh); }
+  80%  { transform: translate(80vw,30vh); }
+  100% { transform: translate(0,0); }
+}
+
+@keyframes bounce {
+  from { transform: scale(1) rotate(-5deg); }
+  to   { transform: scale(1.1) rotate(5deg); }
+}
+
+.confetti {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  top: 0;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to { transform: translateY(100vh) rotate(360deg); }
+}
+
+</style>
 </head>
 <body>
   <div class="container">
@@ -1903,7 +1953,7 @@ BIOMETRIC
     </div>
 
     <div class="footer">
-      © 2025 Punch Tracker | Developed by TASHL Team 🚀✨
+      © 2025 Punch Tracker | Developed by Quick Break Team 🚀✨
     </div>
   </div>
 
@@ -3573,6 +3623,115 @@ function validateLogFormat(text) {
     });
 
   </script>
+
+<!-- ================= DORAEMON CELEBRATION ================= -->
+
+<div id="doraemonBox">
+  <img id="doraemonImg"
+       src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+</div>
+
+<audio id="bellSound">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3">
+</audio>
+
+<audio id="crackerSound">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-small-firework-explosion-1692.mp3">
+</audio>
+
+<audio id="voiceSound">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.mp3">
+</audio>
+
+<script>
+/* ================= DORAEMON LOGIC (NON-INTRUSIVE) ================= */
+
+let doraemonActive = false;
+let celebrationTimeout = null;
+
+function parseWorkHours() {
+    const workElement = document.getElementById("totalWork");
+    if (!workElement) return 0;
+
+    const time = workElement.innerText.trim();
+    const parts = time.split(":");
+    if (parts.length !== 3) return 0;
+
+    const hrs = parseInt(parts[0]) || 0;
+    const mins = parseInt(parts[1]) || 0;
+    const secs = parseInt(parts[2]) || 0;
+
+    return hrs + (mins/60) + (secs/3600);
+}
+
+function triggerDoraemon(hours) {
+    if (hours < 6.5) return;
+
+    const box = document.getElementById("doraemonBox");
+    const img = document.getElementById("doraemonImg");
+    const bell = document.getElementById("bellSound");
+    const cracker = document.getElementById("crackerSound");
+    const voice = document.getElementById("voiceSound");
+
+    box.style.display = "block";
+    img.className = "roam";
+
+    if (!doraemonActive) {
+        bell.play();
+    }
+
+    if (hours >= 8) {
+        img.className = "celebrate";
+        cracker.play();
+        voice.play();
+        launchConfetti();
+    }
+
+    doraemonActive = true;
+
+    clearTimeout(celebrationTimeout);
+    celebrationTimeout = setTimeout(stopCelebration, 30000);
+}
+
+function stopCelebration() {
+    document.getElementById("doraemonBox").style.display = "none";
+    removeConfetti();
+    doraemonActive = false;
+}
+
+function launchConfetti() {
+    for (let i = 0; i < 40; i++) {
+        let conf = document.createElement("div");
+        conf.className = "confetti";
+        conf.style.left = Math.random() * 100 + "vw";
+        conf.style.background = randomColor();
+        conf.style.animationDuration = (2 + Math.random()*3) + "s";
+        document.body.appendChild(conf);
+    }
+}
+
+function removeConfetti() {
+    document.querySelectorAll(".confetti").forEach(e => e.remove());
+}
+
+function randomColor() {
+    const colors = ["#ff4d4d","#ffd11a","#33cc33","#3399ff","#ff66cc"];
+    return colors[Math.floor(Math.random()*colors.length)];
+}
+
+/* Observe changes in totalWork without modifying core logic */
+const observer = new MutationObserver(() => {
+    const hours = parseWorkHours();
+    triggerDoraemon(hours);
+});
+
+window.addEventListener("load", () => {
+    const target = document.getElementById("totalWork");
+    if (target) {
+        observer.observe(target, { childList: true, subtree: true });
+    }
+});
+</script>
+
 </body>
 </html>
-
