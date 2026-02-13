@@ -1432,6 +1432,204 @@
       border-color: rgba(16, 185, 129, 0.25) !important;
       background: rgba(209, 250, 229, 0.04) !important;
     }
+    /* ===== DORAEMON CELEBRATION STYLES ===== */
+    .doraemon-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 20000;
+      animation: modalFadeIn 0.5s ease-out;
+      cursor: pointer;
+    }
+
+    .doraemon-celebration {
+      text-align: center;
+      animation: modalSlideIn 0.6s ease-out;
+      position: relative;
+    }
+
+    .doraemon-character {
+      font-size: 120px;
+      line-height: 1;
+      display: inline-block;
+      position: relative;
+      filter: drop-shadow(0 8px 30px rgba(59, 130, 246, 0.4));
+    }
+
+    .doraemon-dance {
+      animation: doraemonDance 0.6s ease-in-out infinite;
+    }
+
+    @keyframes doraemonDance {
+      0%   { transform: translateY(0) rotate(0deg) scale(1); }
+      15%  { transform: translateY(-30px) rotate(-12deg) scale(1.05); }
+      30%  { transform: translateY(0) rotate(12deg) scale(1); }
+      45%  { transform: translateY(-20px) rotate(-8deg) scale(1.08); }
+      60%  { transform: translateY(0) rotate(8deg) scale(1); }
+      75%  { transform: translateY(-35px) rotate(-15deg) scale(1.1); }
+      100% { transform: translateY(0) rotate(0deg) scale(1); }
+    }
+    /* Imitating/Mocking Dance for below 6.5hr */
+    .doraemon-imitate {
+      animation: doraemonImitate 0.8s ease-in-out infinite;
+    }
+
+    @keyframes doraemonImitate {
+      0%   { transform: translateX(0) rotate(0deg) scale(1); }
+      10%  { transform: translateX(-15px) rotate(-5deg) scale(0.95); }
+      20%  { transform: translateX(15px) rotate(5deg) scale(0.95); }
+      30%  { transform: translateX(-15px) rotate(-5deg) scale(1.05); }
+      40%  { transform: translateX(15px) rotate(5deg) scale(1.05); }
+      50%  { transform: translateX(0) rotate(0deg) scale(1.1) translateY(-10px); }
+      60%  { transform: translateX(10px) rotate(8deg) scale(1); }
+      70%  { transform: translateX(-10px) rotate(-8deg) scale(1); }
+      80%  { transform: translateX(10px) rotate(3deg) scale(1.05); }
+      90%  { transform: translateX(-10px) rotate(-3deg) scale(1.05); }
+      100% { transform: translateX(0) rotate(0deg) scale(1); }
+    }
+
+    .doraemon-crawl-dance {
+      animation: doraemonCrawlDance 1.8s ease-in-out infinite;
+    }
+
+    @keyframes doraemonCrawlDance {
+      0%   { transform: translateX(-200px) translateY(60px) rotate(0deg) scale(0.7); }
+      10%  { transform: translateX(-160px) translateY(50px) rotate(10deg) scale(0.75); }
+      20%  { transform: translateX(-100px) translateY(30px) rotate(-8deg) scale(0.85); }
+      30%  { transform: translateX(-40px) translateY(10px) rotate(12deg) scale(0.95); }
+      40%  { transform: translateX(0px) translateY(0px) rotate(0deg) scale(1); }
+      50%  { transform: translateX(0px) translateY(-40px) rotate(-15deg) scale(1.15); }
+      60%  { transform: translateX(0px) translateY(0px) rotate(15deg) scale(1); }
+      70%  { transform: translateX(0px) translateY(-50px) rotate(-20deg) scale(1.2); }
+      80%  { transform: translateX(0px) translateY(0px) rotate(20deg) scale(1.05); }
+      90%  { transform: translateX(0px) translateY(-30px) rotate(-10deg) scale(1.1); }
+      100% { transform: translateX(0px) translateY(0px) rotate(0deg) scale(1); }
+    }
+
+    .celebration-title {
+      font-size: 32px;
+      font-weight: 900;
+      margin-top: 24px;
+      letter-spacing: -1px;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .celebration-title.gold {
+      background: linear-gradient(135deg, #f59e0b, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .celebration-title.red {
+      background: linear-gradient(135deg, #ef4444, #f97316, #ef4444);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+
+    .celebration-title.rainbow {
+      background: linear-gradient(135deg, #ef4444, #f59e0b, #10b981, #3b82f6, #8b5cf6, #ec4899);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: rainbowShift 2s ease-in-out infinite;
+    }
+
+    @keyframes rainbowShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .celebration-subtitle {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 12px;
+      font-weight: 600;
+    }
+
+    .celebration-dismiss {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 28px;
+      font-weight: 500;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50%      { opacity: 1; }
+    }
+
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 20001;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      top: -10px;
+      opacity: 0;
+      animation: confettiFall linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0%   { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+      100% { opacity: 0; transform: translateY(100vh) rotate(720deg) scale(0.3); }
+    }
+
+    .music-notes-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 20002;
+      overflow: hidden;
+    }
+
+    .music-note {
+      position: absolute;
+      font-size: 28px;
+      opacity: 0;
+      animation: floatNote 3s ease-in-out forwards;
+    }
+
+    @keyframes floatNote {
+      0%   { opacity: 0; transform: translateY(0) scale(0.5); }
+      20%  { opacity: 1; transform: translateY(-40px) scale(1); }
+      80%  { opacity: 0.8; transform: translateY(-200px) scale(1.2) rotate(15deg); }
+      100% { opacity: 0; transform: translateY(-300px) scale(0.8) rotate(-10deg); }
+    }
+
+    .star-burst {
+      position: absolute;
+      font-size: 24px;
+      animation: starBurst 1.5s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes starBurst {
+      0%   { opacity: 1; transform: scale(0) rotate(0deg); }
+      50%  { opacity: 1; transform: scale(1.5) rotate(180deg); }
+      100% { opacity: 0; transform: scale(0.5) rotate(360deg); }
+    }
 
     @media (prefers-reduced-motion: reduce) {
       *,
@@ -2267,6 +2465,8 @@ function validateLogFormat(text) {
         }
         
         // Success notification
+        resetCelebrations();
+        
         showNotification('All data cleared successfully! 🧹', 'success');
         
       } catch (error) {
@@ -2335,6 +2535,8 @@ function validateLogFormat(text) {
         }
         
         // Success notification
+        resetCelebrations();
+
         showNotification('Custom view cleared successfully! 🧹', 'success');
         
       } catch (error) {
@@ -2413,6 +2615,8 @@ function validateLogFormat(text) {
         document.getElementById('weeklyAlertContainer').innerHTML = '';
         
         // Success notification
+        resetCelebrations();
+
         showNotification('Weekly view cleared successfully! 🧹', 'success');
         
       } catch (error) {
@@ -2778,6 +2982,8 @@ function validateLogFormat(text) {
         
         setTimeout(() => {
           try {
+            resetCelebrations();
+            
             const txt = document.getElementById('autoInput').value;
             
             // Enhanced validation
@@ -2991,6 +3197,22 @@ function validateLogFormat(text) {
                 successMessage += ` with ${secToHms(totalExplicitBreaks)} explicit breaks`;
               }
               showNotification(successMessage, 'success');
+
+              // Doraemon celebrations
+              if (totalWork >= 28800 && !shown80Celebration) {
+                shown80Celebration = true;
+                shown65Celebration = true;
+                shownBelowCelebration = true;
+                setTimeout(() => showDoraemonCelebration('8'), 800);
+              } else if (totalWork >= 23400 && !shown65Celebration) {
+                shown65Celebration = true;
+                shownBelowCelebration = true;
+                setTimeout(() => showDoraemonCelebration('6.5'), 800);
+              } else if (totalWork > 0 && totalWork < 23400 && !shownBelowCelebration) {
+                shownBelowCelebration = true;
+                setTimeout(() => showDoraemonCelebration('below'), 800);
+              }
+
               
             } catch (error) {
               console.error('Error updating display elements:', error);
@@ -3042,7 +3264,8 @@ function validateLogFormat(text) {
         setTimeout(() => {
           try {
             const txt = document.getElementById('customAutoInput').value;
-            
+            resetCelebrations();
+           
             // Enhanced validation
             const validation = validateLogFormat(txt);
             if (!validation.isValid) {
@@ -3229,7 +3452,21 @@ function validateLogFormat(text) {
               if (totalExplicitBreaks > 0) {
                 successMessage += ` with ${secToHms(totalExplicitBreaks)} explicit breaks`;
               }
-              showNotification(successMessage, 'success');
+
+              // Doraemon celebrations for custom view
+              if (totalWork >= 28800 && !shown80Celebration) {
+                shown80Celebration = true;
+                shown65Celebration = true;
+                shownBelowCelebration = true;
+                setTimeout(() => showDoraemonCelebration('8'), 800);
+              } else if (totalWork >= 23400 && !shown65Celebration) {
+                shown65Celebration = true;
+                shownBelowCelebration = true;
+                setTimeout(() => showDoraemonCelebration('6.5'), 800);
+              } else if (totalWork > 0 && totalWork < 23400 && !shownBelowCelebration) {
+                shownBelowCelebration = true;
+                setTimeout(() => showDoraemonCelebration('below'), 800);
+              }
               
             } catch (error) {
               console.error('Error updating display elements:', error);
@@ -3280,6 +3517,8 @@ function validateLogFormat(text) {
         
         setTimeout(() => {
           try {
+            resetCelebrations();
+
             const txt = document.getElementById('weeklyPunchLogs').value;
             
             // Enhanced validation
@@ -3443,6 +3682,21 @@ function validateLogFormat(text) {
               successMessage += ' (Double punch correction applied)';
             }
             showNotification(successMessage, 'success');
+
+            // Doraemon celebrations for weekly view
+            if (totalWork >= 28800 && !shown80Celebration) {
+              shown80Celebration = true;
+              shown65Celebration = true;
+              shownBelowCelebration = true;
+              setTimeout(() => showDoraemonCelebration('8'), 800);
+            } else if (totalWork >= 23400 && !shown65Celebration) {
+              shown65Celebration = true;
+              shownBelowCelebration = true;
+              setTimeout(() => showDoraemonCelebration('6.5'), 800);
+            } else if (totalWork > 0 && totalWork < 23400 && !shownBelowCelebration) {
+              shownBelowCelebration = true;
+              setTimeout(() => showDoraemonCelebration('below'), 800);
+            }
             
           } catch (error) {
             console.error('Processing error:', error);
@@ -3509,6 +3763,304 @@ function validateLogFormat(text) {
       alertDiv.textContent = alertMessage;
       alertContainer.appendChild(alertDiv);
     }
+    // ===== DORAEMON CELEBRATION SYSTEM =====
+    let celebrationActive = false;
+    let bellAudioContext = null;
+
+    function getAudioContext() {
+      if (!bellAudioContext) {
+        bellAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return bellAudioContext;
+    }
+
+    function playBellSound(frequency = 830, duration = 0.3) {
+      try {
+        const ctx = getAudioContext();
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
+        gainNode.gain.setValueAtTime(0.4, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + duration);
+      } catch (e) {
+        console.warn('Audio not supported:', e);
+      }
+    }
+
+    function playCelebrationBells(type) {
+      try {
+        if (type === '6.5') {
+          const notes = [523, 659, 784, 1047];
+          notes.forEach((freq, i) => {
+            setTimeout(() => playBellSound(freq, 0.4), i * 200);
+          });
+          setTimeout(() => {
+            notes.forEach((freq, i) => {
+              setTimeout(() => playBellSound(freq, 0.4), i * 200);
+            });
+          }, 1200);
+        } else if (type === '8') {
+          const notes = [523, 587, 659, 784, 880, 1047, 1175, 1319];
+          notes.forEach((freq, i) => {
+            setTimeout(() => playBellSound(freq, 0.5), i * 180);
+          });
+          setTimeout(() => {
+            playBellSound(1047, 1.0);
+            setTimeout(() => playBellSound(1319, 1.0), 50);
+            setTimeout(() => playBellSound(1568, 1.0), 100);
+          }, 1800);
+          setTimeout(() => {
+            for (let i = 0; i < 6; i++) {
+              setTimeout(() => playBellSound(2093 - (i * 100), 0.25), i * 150);
+            }
+          }, 3000);
+        }
+      } catch (e) {
+        console.warn('Bell melody error:', e);
+      }
+    }
+    // Play imitating/mocking sound
+    function playImitatingSound() {
+      try {
+        const ctx = getAudioContext();
+        // Descending "nah nah nah nah nah" melody
+        const notes = [659, 587, 523, 587, 523, 440];
+        notes.forEach((freq, i) => {
+          setTimeout(() => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.3);
+          }, i * 220);
+        });
+        // Second round — faster teasing
+        setTimeout(() => {
+          const tease = [523, 659, 523, 659, 440, 523];
+          tease.forEach((freq, i) => {
+            setTimeout(() => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.type = 'square';
+              osc.frequency.setValueAtTime(freq, ctx.currentTime);
+              gain.gain.setValueAtTime(0.12, ctx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+              osc.start(ctx.currentTime);
+              osc.stop(ctx.currentTime + 0.25);
+            }, i * 180);
+          });
+        }, 1600);
+        // Sad trombone ending
+        setTimeout(() => {
+          const sad = [392, 370, 349, 330];
+          sad.forEach((freq, i) => {
+            setTimeout(() => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(freq, ctx.currentTime);
+              gain.gain.setValueAtTime(0.2, ctx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+              osc.start(ctx.currentTime);
+              osc.stop(ctx.currentTime + 0.6);
+            }, i * 350);
+          });
+        }, 3000);
+      } catch (e) {
+        console.warn('Imitating sound error:', e);
+      }
+    }
+
+
+    function playChimeSound() {
+      try {
+        const ctx = getAudioContext();
+        const notes = [1047, 1319, 1568];
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime);
+          gain.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+          osc.start(ctx.currentTime + i * 0.05);
+          osc.stop(ctx.currentTime + 0.9);
+        });
+      } catch (e) {
+        console.warn('Chime error:', e);
+      }
+    }
+
+    function createConfetti(count = 50) {
+      const container = document.createElement('div');
+      container.className = 'confetti-container';
+      container.id = 'confettiContainer';
+      document.body.appendChild(container);
+      const colors = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#06b6d4', '#f97316'];
+      const shapes = ['■', '●', '▲', '★', '♦', '◆'];
+      for (let i = 0; i < count; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.color = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.fontSize = (Math.random() * 16 + 8) + 'px';
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        container.appendChild(confetti);
+      }
+      setTimeout(() => { if (container.parentNode) container.remove(); }, 6000);
+    }
+
+    function createMusicNotes() {
+      const container = document.createElement('div');
+      container.className = 'music-notes-container';
+      container.id = 'musicNotesContainer';
+      document.body.appendChild(container);
+      const notes = ['🎵', '🎶', '🎼', '🔔', '🎵', '🎶', '🔔', '✨', '🎵', '🔔'];
+      for (let i = 0; i < notes.length; i++) {
+        const note = document.createElement('div');
+        note.className = 'music-note';
+        note.textContent = notes[i];
+        note.style.left = (10 + Math.random() * 80) + '%';
+        note.style.bottom = '10%';
+        note.style.animationDelay = (Math.random() * 4) + 's';
+        note.style.animationDuration = (2 + Math.random() * 2) + 's';
+        container.appendChild(note);
+      }
+      setTimeout(() => { if (container.parentNode) container.remove(); }, 8000);
+    }
+
+    function createStarBurst(parentEl) {
+      const stars = ['⭐', '✨', '🌟', '💫', '⚡'];
+      for (let i = 0; i < 8; i++) {
+        const star = document.createElement('span');
+        star.className = 'star-burst';
+        star.textContent = stars[Math.floor(Math.random() * stars.length)];
+        const angle = (i / 8) * 360;
+        const radius = 80 + Math.random() * 40;
+        const x = Math.cos(angle * Math.PI / 180) * radius;
+        const y = Math.sin(angle * Math.PI / 180) * radius;
+        star.style.left = `calc(50% + ${x}px)`;
+        star.style.top = `calc(50% + ${y}px)`;
+        star.style.animationDelay = (i * 0.15) + 's';
+        parentEl.appendChild(star);
+      }
+    }
+
+    function showDoraemonCelebration(type) {
+      if (celebrationActive) return;
+      celebrationActive = true;
+      const overlay = document.createElement('div');
+      overlay.className = 'doraemon-overlay';
+      overlay.id = 'doraemonOverlay';
+      let animClass, titleClass, titleText, subtitleText;
+      if (type === 'below') {
+        animClass = 'doraemon-imitate';
+        titleClass = 'red';
+        titleText = '😜 Not Done Yet! Keep Going! 😜';
+        subtitleText = 'Doraemon is mocking you! Complete 6.5 hours to stop him! 🏃‍♂️💨';
+        doraemonGif = 'https://github.com/Aditya-FRS/Gif/blob/main/anime.gif?raw=true';
+      } else if (type === '6.5') {
+        animClass = 'doraemon-dance';
+        titleClass = 'gold';
+        titleText = '🎉 6.5 Hours Completed! 🎉';
+        subtitleText = 'Minimum daily target achieved! Great work! 💪';
+        doraemonGif = 'https://github.com/Aditya-FRS/Gif/blob/main/doraemon.gif?raw=true';
+      } else {
+        animClass = 'doraemon-crawl-dance';
+        titleClass = 'rainbow';
+        titleText = '🏆 8 Hours Completed! 🏆';
+        subtitleText = 'Full day target smashed! You are amazing! 🚀🔥';
+        doraemonGif = 'https://github.com/Aditya-FRS/Gif/blob/main/magic-doraemon-doraemon.gif?raw=true';
+      }
+      overlay.innerHTML = `
+        <div class="doraemon-celebration">
+          <div class="doraemon-character" id="doraemonChar"><img src="${doraemonGif}" alt="Doraemon Celebrating" style="width: 200px; height: 200px; object-fit: contain;"></div>
+          <div class="celebration-title ${titleClass}">${titleText}</div>
+          <div class="celebration-subtitle">${subtitleText}</div>
+          <div class="celebration-dismiss">🔔 Click anywhere to dismiss 🔔</div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+      const charEl = document.getElementById('doraemonChar');
+      if (charEl) createStarBurst(charEl);
+      if (type === 'below') {
+        createConfetti(20);
+        playImitatingSound();
+      } else {
+        createConfetti(type === '8' ? 80 : 40);
+        createMusicNotes();
+        playCelebrationBells(type);
+      }
+      if (type === '8') {
+        setTimeout(() => createConfetti(60), 2500);
+        setTimeout(() => createMusicNotes(), 3000);
+        setTimeout(() => playChimeSound(), 2000);
+        setTimeout(() => playChimeSound(), 3500);
+      }
+      const starInterval = setInterval(() => {
+        if (charEl && document.getElementById('doraemonOverlay')) {
+          createStarBurst(charEl);
+        } else {
+          clearInterval(starInterval);
+        }
+      }, 2000);
+      overlay.addEventListener('click', () => {
+        overlay.style.animation = 'modalFadeIn 0.3s ease-out reverse';
+        setTimeout(() => {
+          if (overlay.parentNode) overlay.remove();
+          const confetti = document.getElementById('confettiContainer');
+          const music = document.getElementById('musicNotesContainer');
+          if (confetti) confetti.remove();
+          if (music) music.remove();
+          clearInterval(starInterval);
+          celebrationActive = false;
+        }, 300);
+      });
+      const autoDismiss = type === '8' ? 12000 : type === 'below' ? 6000 : 8000;
+      setTimeout(() => {
+        if (document.getElementById('doraemonOverlay')) {
+          overlay.style.animation = 'modalFadeIn 0.3s ease-out reverse';
+          setTimeout(() => {
+            if (overlay.parentNode) overlay.remove();
+            const confetti = document.getElementById('confettiContainer');
+            const music = document.getElementById('musicNotesContainer');
+            if (confetti) confetti.remove();
+            if (music) music.remove();
+            clearInterval(starInterval);
+            celebrationActive = false;
+          }, 300);
+        }
+      }, autoDismiss);
+    }
+
+    let shownBelowCelebration = false;
+    let shown65Celebration = false;
+    let shown80Celebration = false;
+
+    function resetCelebrations() {
+      shownBelowCelebration = false;
+      shown65Celebration = false;
+      shown80Celebration = false;
+    }
+
 
     // Enhanced security measures with red gradient notifications
     document.addEventListener("contextmenu", e => {
@@ -3549,6 +4101,17 @@ function validateLogFormat(text) {
     });
 
     window.addEventListener('load', () => {
+      // Preload celebration GIFs so they appear instantly
+      const preloadGifs = [
+        'https://github.com/Aditya-FRS/Gif/blob/main/anime.gif?raw=true',
+        'https://github.com/Aditya-FRS/Gif/blob/main/doraemon.gif?raw=true',
+        'https://github.com/Aditya-FRS/Gif/blob/main/magic-doraemon-doraemon.gif?raw=true'
+      ];
+      preloadGifs.forEach(url => {
+        const img = new Image();
+        img.src = url;
+      });
+
       console.log('Punch Tracker loaded successfully');
       showNotification('Punch Tracker loaded successfully', 'success');
       
