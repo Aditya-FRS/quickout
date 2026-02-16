@@ -1630,6 +1630,72 @@
       50%  { opacity: 1; transform: scale(1.5) rotate(180deg); }
       100% { opacity: 0; transform: scale(0.5) rotate(360deg); }
     }
+    /* ===== INACTIVITY TIMEOUT STYLES ===== */
+    /* ===== INACTIVITY TIMEOUT STYLES ===== */
+    .timeout-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: white;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 50000;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .timeout-overlay.warning {
+      display: flex;
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .timeout-overlay.locked {
+      display: flex;
+      background: white;
+    }
+
+    .timeout-overlay .timeout-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .timeout-countdown {
+      font-size: 100px;
+      font-weight: 900;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #ef4444, #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: countdownPulse 1s ease-in-out infinite;
+      line-height: 1;
+    }
+
+    @keyframes countdownPulse {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.15); }
+    }
+
+    .timeout-message {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ef4444;
+      font-family: 'Inter', sans-serif;
+      text-align: center;
+    }
+
+    .timeout-submessage {
+      font-size: 15px;
+      font-weight: 500;
+      color: #94a3b8;
+      font-family: 'Inter', sans-serif;
+      text-align: center;
+    }
 
     @media (prefers-reduced-motion: reduce) {
       *,
@@ -1643,6 +1709,41 @@
   </style>
 </head>
 <body>
+  <!-- Access Control Overlay -->
+  <div id="accessDeniedOverlay" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    flex-direction: column;
+    gap: 20px;
+  ">
+    <div style="font-size: 60px;">🔒</div>
+    <div style="color: #ef4444; font-size: 28px; font-weight: 800; font-family: Inter, sans-serif;">Access Denied</div>
+    <div style="color: #94a3b8; font-size: 15px; font-weight: 500; font-family: Inter, sans-serif; text-align: center; max-width: 420px; line-height: 1.6;">
+      This device is not authorized to access Punch Tracker.<br>Contact your administrator with your Device ID below.
+    </div>
+    <div id="deviceIDDisplay" style="
+      color: #06b6d4;
+      font-size: 18px;
+      font-weight: 700;
+      font-family: monospace;
+      background: rgba(6, 182, 212, 0.1);
+      border: 2px solid rgba(6, 182, 212, 0.3);
+      padding: 14px 28px;
+      border-radius: 12px;
+      margin-top: 8px;
+      user-select: all;
+      cursor: pointer;
+      letter-spacing: 1px;
+    " title="Click to copy">Loading...</div>
+    <div style="color: #475569; font-size: 12px; font-family: Inter, sans-serif;">Click the Device ID to copy it</div>
+  </div>
+
   <div class="container">
     <h1 style="color:#0077b6 !important;">⏱ Punch Tracker — Work & Break Analytics</h1>
     
@@ -2104,6 +2205,10 @@ BIOMETRIC
       © 2025 Punch Tracker | Developed by TASHL Team 🚀✨
     </div>
   </div>
+  <!-- Inactivity Timeout Overlay -->
+  <div class="timeout-overlay" id="timeoutOverlay">
+    <div class="timeout-content" id="timeoutContent"></div>
+  </div>
 
   <!-- Welcome Modal -->
   <div class="welcome-modal" id="welcomeModal">
@@ -2120,6 +2225,195 @@ BIOMETRIC
   </div>
 
   <script>
+    // ===== DEVICE ACCESS CONTROL =====
+    function generateDeviceID() {
+      var screen_data = screen.width + 'x' + screen.height + 'x' + screen.colorDepth;
+      var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      var language = navigator.language;
+      var platform = navigator.platform;
+      var cores = navigator.hardwareConcurrency || 'unknown';
+      var memory = navigator.deviceMemory || 'unknown';
+      var touch = navigator.maxTouchPoints || 0;
+      var canvas = document.createElement('canvas');
+      var ctx = canvas.getContext('2d');
+      ctx.textBaseline = 'top';
+      ctx.font = '14px Arial';
+      ctx.fillStyle = '#f60';
+      ctx.fillRect(125, 1, 62, 20);
+      ctx.fillStyle = '#069';
+      ctx.fillText('PunchTracker', 2, 15);
+      ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+      ctx.fillText('DeviceID', 4, 17);
+      var canvasData = canvas.toDataURL();
+      var rawData = screen_data + '|' + timezone + '|' + language + '|' + platform + '|' + cores + '|' + memory + '|' + touch + '|' + canvasData;
+      var hash = 0;
+      for (var i = 0; i < rawData.length; i++) {
+        var char = rawData.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+      }
+      var positiveHash = Math.abs(hash);
+      var id = 'PT-' + positiveHash.toString(36).toUpperCase();
+      var hash2 = 0;
+      for (var j = rawData.length - 1; j >= 0; j--) {
+        var char2 = rawData.charCodeAt(j);
+        hash2 = ((hash2 << 7) - hash2) + char2;
+        hash2 = hash2 & hash2;
+      }
+      id += '-' + Math.abs(hash2).toString(36).toUpperCase();
+      return id;
+    }
+
+    // WHITELIST: Add authorized Device IDs here
+    const ALLOWED_DEVICES = [
+      // When someone visits and sees their Device ID, they send it to you
+      // You add it here like:
+       'PT-ECZ1Z3-L4FBJZ',
+      // 'PT-AAAAAA-BBBBBB',
+    ];
+
+    // Admin password for quick access without adding Device ID
+    const ADMIN_PASSWORD = 'PunchTracker@2025';
+
+    (function checkDeviceAccess() {
+      var overlay = document.getElementById('accessDeniedOverlay');
+      var idDisplay = document.getElementById('deviceIDDisplay');
+      if (!overlay) return;
+
+      // Always generate Device ID and check whitelist first
+      var deviceID = generateDeviceID();
+
+      // Check if device is in whitelist
+      if (ALLOWED_DEVICES.includes(deviceID)) {
+        try { localStorage.setItem('punchTracker_deviceAuth', 'true'); } catch(e) {}
+        overlay.style.display = 'none';
+        return;
+      }
+
+      // Device NOT in whitelist — check if previously authorized via password
+      // But also verify the stored Device ID matches current device
+      try {
+        var storedAuth = localStorage.getItem('punchTracker_deviceAuth');
+        var storedDeviceID = localStorage.getItem('punchTracker_deviceID');
+        var storedVersion = localStorage.getItem('punchTracker_authVersion');
+        var CURRENT_VERSION = '1';  // Change this number to revoke all access
+        if (storedAuth === 'true' && storedDeviceID === deviceID && storedVersion === CURRENT_VERSION) {
+          overlay.style.display = 'none';
+          return;
+        } else {
+          localStorage.removeItem('punchTracker_deviceAuth');
+          localStorage.removeItem('punchTracker_deviceID');
+          localStorage.removeItem('punchTracker_authVersion');
+        }
+        var storedDeviceID = localStorage.getItem('punchTracker_deviceID');
+        if (storedAuth === 'true' && storedDeviceID === deviceID) {
+          overlay.style.display = 'none';
+          return;
+        } else {
+          // Clear old auth if device ID doesn't match or was removed from whitelist
+          localStorage.removeItem('punchTracker_deviceAuth');
+          localStorage.removeItem('punchTracker_deviceID');
+        }
+      } catch(e) {}
+      if (idDisplay) idDisplay.textContent = deviceID;
+      if (idDisplay) {
+        idDisplay.addEventListener('click', function() {
+          try {
+            navigator.clipboard.writeText(deviceID).then(function() {
+              idDisplay.style.background = 'rgba(16, 185, 129, 0.15)';
+              idDisplay.style.borderColor = 'rgba(16, 185, 129, 0.5)';
+              idDisplay.style.color = '#10b981';
+              idDisplay.textContent = '✅ Copied! — ' + deviceID;
+              setTimeout(function() {
+                idDisplay.style.background = 'rgba(6, 182, 212, 0.1)';
+                idDisplay.style.borderColor = 'rgba(6, 182, 212, 0.3)';
+                idDisplay.style.color = '#06b6d4';
+                idDisplay.textContent = deviceID;
+              }, 2000);
+            });
+          } catch(e) {
+            var textArea = document.createElement('textarea');
+            textArea.value = deviceID;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            textArea.remove();
+            idDisplay.textContent = '✅ Copied! — ' + deviceID;
+            setTimeout(function() { idDisplay.textContent = deviceID; }, 2000);
+          }
+        });
+      }
+      var passwordSection = document.createElement('div');
+      passwordSection.style.cssText = 'margin-top: 24px; text-align: center;';
+      passwordSection.innerHTML = `
+        <div style="color: #64748b; font-size: 13px; font-family: Inter, sans-serif; margin-bottom: 12px;">
+          — or enter admin password —
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+          <input type="password" id="adminPasswordInput" placeholder="Admin password" style="
+            padding: 12px 18px;
+            border-radius: 10px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            background: rgba(30, 41, 59, 0.8);
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: Inter, sans-serif;
+            width: 220px;
+            outline: none;
+          " onkeydown="if(event.key==='Enter')document.getElementById('adminUnlockBtn').click()">
+          <button id="adminUnlockBtn" onclick="adminUnlock()" style="
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: Inter, sans-serif;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+          ">Unlock 🔓</button>
+        </div>
+        <div id="adminError" style="color: #ef4444; font-size: 13px; font-weight: 600; font-family: Inter, sans-serif; margin-top: 10px; display: none;">
+          ❌ Wrong password
+        </div>
+      `;
+      overlay.appendChild(passwordSection);
+    })();
+
+    function adminUnlock() {
+      var input = document.getElementById('adminPasswordInput');
+      var errorEl = document.getElementById('adminError');
+      if (!input) return;
+      if (input.value === ADMIN_PASSWORD) {
+        try {
+          localStorage.setItem('punchTracker_deviceAuth', 'true');
+          localStorage.setItem('punchTracker_deviceID', generateDeviceID());
+          localStorage.setItem('punchTracker_authVersion', '1');
+        } catch(e) {}
+        var overlay = document.getElementById('accessDeniedOverlay');
+        if (overlay) {
+          overlay.innerHTML = `
+            <div style="font-size: 60px;">✅</div>
+            <div style="color: #10b981; font-size: 28px; font-weight: 800; font-family: Inter, sans-serif;">Access Granted!</div>
+            <div style="color: #94a3b8; font-size: 15px; font-weight: 500; font-family: Inter, sans-serif;">Device authorized. Redirecting...</div>
+          `;
+          setTimeout(function() { overlay.style.display = 'none'; }, 1500);
+        }
+      } else {
+        if (errorEl) errorEl.style.display = 'block';
+        input.value = '';
+        input.focus();
+        input.style.borderColor = 'rgba(239, 68, 68, 0.6)';
+        setTimeout(function() {
+          input.style.borderColor = 'rgba(59, 130, 246, 0.3)';
+          if (errorEl) errorEl.style.display = 'none';
+        }, 2000);
+      }
+    }
+    // ===== END DEVICE ACCESS CONTROL =====
+
     // Enhanced error handling and fault tolerance
     let clockInterval = null;
     let isProcessing = false;
@@ -4063,6 +4357,108 @@ function validateLogFormat(text) {
 
 
     // Enhanced security measures with red gradient notifications
+    // ===== INACTIVITY TIMEOUT SYSTEM =====
+    let inactivityTimer = null;
+    let countdownTimer = null;
+    let countdownValue = 5;
+    let isScreenLocked = false;
+    const INACTIVITY_LIMIT = 10;
+    const COUNTDOWN_FROM = 5;
+
+    function resetInactivityTimer() {
+      // If screen is locked, ONLY refresh can unlock — ignore all activity
+      if (isScreenLocked) return;
+
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      if (countdownTimer) clearInterval(countdownTimer);
+      var overlay = document.getElementById('timeoutOverlay');
+      if (overlay) overlay.className = 'timeout-overlay';
+      inactivityTimer = setTimeout(startCountdown, INACTIVITY_LIMIT * 1000);
+    }
+
+    function startCountdown() {
+      if (isScreenLocked) return;
+      countdownValue = COUNTDOWN_FROM;
+      var overlay = document.getElementById('timeoutOverlay');
+      var content = document.getElementById('timeoutContent');
+      if (!overlay || !content) return;
+      overlay.className = 'timeout-overlay warning';
+      updateCountdownDisplay(content);
+      countdownTimer = setInterval(function() {
+        countdownValue--;
+        if (countdownValue <= 0) {
+          clearInterval(countdownTimer);
+          lockScreen();
+        } else {
+          updateCountdownDisplay(content);
+        }
+      }, 1000);
+    }
+
+    function updateCountdownDisplay(content) {
+      content.innerHTML = `
+        <div style="font-size: 50px;">⚠️</div>
+        <div class="timeout-message">Access will be denied in</div>
+        <div class="timeout-countdown">${countdownValue}</div>
+        <div class="timeout-submessage">Move your mouse or press any key to stay active</div>
+      `;
+    }
+
+    function lockScreen() {
+      isScreenLocked = true;
+
+      // Remove ALL event listeners so mouse/keyboard does nothing
+      ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'].forEach(function(event) {
+        document.removeEventListener(event, resetInactivityTimer);
+      });
+
+      // Stop all timers
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      if (countdownTimer) clearInterval(countdownTimer);
+      if (clockInterval) {
+        clearInterval(clockInterval);
+        clockInterval = null;
+      }
+
+      // White screen — Access Denied
+      var overlay = document.getElementById('timeoutOverlay');
+      var content = document.getElementById('timeoutContent');
+      if (!overlay || !content) return;
+      overlay.className = 'timeout-overlay locked';
+      content.innerHTML = `
+        <div style="font-size: 28px; font-weight: 800; color: #ef4444; font-family: Inter, sans-serif;">⛔ Access Denied</div>
+        <div style="font-size: 16px; font-weight: 600; color: #64748b; font-family: Inter, sans-serif; margin-top: 12px;">
+          Session expired due to inactivity
+        </div>
+        <div style="font-size: 14px; font-weight: 500; color: #94a3b8; font-family: Inter, sans-serif; margin-top: 8px;">
+          Please refresh the page to continue
+        </div>
+      `;
+
+      // Block ALL interaction — only browser refresh works
+      document.body.style.pointerEvents = 'none';
+      document.body.style.userSelect = 'none';
+      overlay.style.pointerEvents = 'all';
+
+      // Block keyboard completely
+      document.addEventListener('keydown', function blockAll(e) {
+        // Only allow F5 (refresh) and Ctrl+R (refresh)
+        if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) return;
+        e.preventDefault();
+        e.stopPropagation();
+      }, true);
+    }
+
+    // Listen for user activity
+    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'].forEach(function(event) {
+      document.addEventListener(event, resetInactivityTimer, { passive: true });
+    });
+
+    resetInactivityTimer();
+    // ===== END INACTIVITY TIMEOUT SYSTEM =====
+
+
+
     document.addEventListener("contextmenu", e => {
       e.preventDefault();
       showNotification("Right Click is disabled", 'error');
@@ -4136,5 +4532,67 @@ function validateLogFormat(text) {
     });
 
   </script>
+<script>
+// ===== SOURCE CODE PROTECTION =====
+// Remove all script content from DOM after execution
+(function() {
+  setTimeout(function() {
+    var scripts = document.querySelectorAll('script');
+    scripts.forEach(function(s) {
+      if (s.textContent && s.textContent.length > 100) {
+        s.textContent = '/* [Protected Code - Access Denied] */';
+      }
+    });
+  }, 100);
+
+  // Prevent innerHTML reading
+  var _origInnerHTML = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+  var _origOuterHTML = Object.getOwnPropertyDescriptor(Element.prototype, 'outerHTML');
+
+  Object.defineProperty(Element.prototype, 'innerHTML', {
+    get: function() {
+      if (this.tagName === 'SCRIPT') return '/* [Protected] */';
+      if (this.tagName === 'HTML' || this.tagName === 'BODY' || this.tagName === 'HEAD') {
+        var clone = this.cloneNode(true);
+        clone.querySelectorAll('script').forEach(function(s) {
+          s.textContent = '/* [Protected Code] */';
+        });
+        return clone.innerHTML;
+      }
+      return _origInnerHTML.get.call(this);
+    },
+    set: _origInnerHTML.set
+  });
+
+  Object.defineProperty(Element.prototype, 'outerHTML', {
+    get: function() {
+      if (this.tagName === 'SCRIPT') return '<script>/* [Protected] */<\/script>';
+      return _origOuterHTML.get.call(this);
+    },
+    set: _origOuterHTML.set
+  });
+
+  // Prevent document.documentElement.outerHTML
+  var _origDocOuterHTML = Object.getOwnPropertyDescriptor(Element.prototype, 'outerHTML');
+
+  // Block view-source style reading
+  Object.defineProperty(document, 'body', {
+    get: function() {
+      return document.querySelector('body');
+    },
+    configurable: false
+  });
+})();
+
+// Prevent Ctrl+S saving
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+}, true);
+</script>
+
 </body>
 </html>
