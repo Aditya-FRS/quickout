@@ -2575,6 +2575,46 @@ BIOMETRIC
         checkDeviceAccess();
         addAdminButton();
       });
+      setInterval(function() {
+        fetchDevicesFromGitHub().then(function() {
+          var deviceID = generateDeviceID();
+          if (!ALLOWED_DEVICES.includes(deviceID)) {
+            var storedAuth = null;
+            try { storedAuth = localStorage.getItem('punchTracker_deviceAuth'); } catch(e) {}
+            if (storedAuth === 'password') {
+              var storedTimestamp = localStorage.getItem('punchTracker_authTimestamp');
+              var now = Date.now();
+              var authTime = parseInt(storedTimestamp, 10);
+              if (storedTimestamp && !isNaN(authTime) && (now - authTime) < 180000) {
+                return;
+              }
+            }
+            var overlay = document.getElementById('accessDeniedOverlay');
+            if (overlay) {
+              overlay.style.display = 'flex';
+              overlay.innerHTML = '<div style="font-size: 60px;">⛔</div>' +
+                '<div style="color: #ef4444; font-size: 28px; font-weight: 800; font-family: Inter, sans-serif;">Access Revoked</div>' +
+                '<div style="color: #94a3b8; font-size: 15px; font-weight: 500; font-family: Inter, sans-serif; margin-top: 8px;">Your device has been removed from the whitelist</div>' +
+                '<div style="color: #64748b; font-size: 14px; margin-top: 12px;">Please contact the administrator</div>';
+              document.body.style.pointerEvents = 'none';
+              document.body.style.userSelect = 'none';
+              try {
+                localStorage.removeItem('punchTracker_deviceAuth');
+                localStorage.removeItem('punchTracker_deviceID');
+                localStorage.removeItem('punchTracker_authVersion');
+                localStorage.removeItem('punchTracker_authTimestamp');
+              } catch(e) {}
+            }
+          } else {
+            var overlay2 = document.getElementById('accessDeniedOverlay');
+            if (overlay2 && overlay2.style.display === 'flex') {
+              overlay2.style.display = 'none';
+              document.body.style.pointerEvents = '';
+              document.body.style.userSelect = '';
+            }
+          }
+        });
+      }, 30000);
     })();
     // ===== END DEVICE ACCESS CONTROL =====
     // ===== ADMIN PANEL BUTTON =====
@@ -2584,9 +2624,9 @@ BIOMETRIC
       if (deviceID !== ADMIN_DEVICE) return;
       var btn = document.createElement('button');
       btn.id = 'adminPanelBtn';
-      btn.textContent = '⚙️';
+      btn.innerHTML = '<span style="display:block;margin-top:-1px;">⚙️</span>';
       btn.title = 'Device Manager';
-      btn.style.cssText = 'position:fixed;bottom:20px;right:20px;width:48px;height:48px;border-radius:50%;border:2px solid rgba(59,130,246,0.4);background:linear-gradient(135deg,#1e293b,#0f172a);color:#3b82f6;font-size:22px;cursor:pointer;z-index:99999;box-shadow:0 4px 15px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;';
+      btn.style.cssText = 'position:fixed;bottom:20px;right:20px;width:48px;height:48px;border-radius:50%;border:2px solid rgba(59,130,246,0.4);background:linear-gradient(135deg,#1e293b,#0f172a);color:#3b82f6;font-size:22px;cursor:pointer;z-index:99999;box-shadow:0 4px 15px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;line-height:1;padding:0;text-align:center;';
       btn.onclick = function() { showAdminPanel(); };
       document.body.appendChild(btn);
     }
