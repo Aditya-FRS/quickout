@@ -2268,52 +2268,46 @@ BIOMETRIC
     const ALLOWED_DEVICES = [
       // When someone visits and sees their Device ID, they send it to you
       // You add it here like:
-       'PT-ECZ1Z3-L4BJZ',
-       'PT-B6HOAF-XLNGN',
-      
+       'PT-ECZ1Z3-L4FBJZ',
+      // 'PT-AAAAAA-BBBBBB',
     ];
 
     // Admin password for quick access without adding Device ID
     const ADMIN_PASSWORD = 'PunchTracker@2025';
 
-    (function checkDeviceAccess() {
+        (function checkDeviceAccess() {
       var overlay = document.getElementById('accessDeniedOverlay');
       var idDisplay = document.getElementById('deviceIDDisplay');
       if (!overlay) return;
-
-      // Always generate Device ID and check whitelist first
       var deviceID = generateDeviceID();
-
-      // Check if device is in whitelist
       if (ALLOWED_DEVICES.includes(deviceID)) {
-        try { localStorage.setItem('punchTracker_deviceAuth', 'true'); } catch(e) {}
+        try {
+          localStorage.setItem('punchTracker_deviceAuth', 'whitelist');
+          localStorage.setItem('punchTracker_deviceID', deviceID);
+        } catch(e) {}
         overlay.style.display = 'none';
         return;
       }
-
-      // Device NOT in whitelist — check if previously authorized via password
-      // But also verify the stored Device ID matches current device
       try {
         var storedAuth = localStorage.getItem('punchTracker_deviceAuth');
-        var storedDeviceID = localStorage.getItem('punchTracker_deviceID');
-        var storedVersion = localStorage.getItem('punchTracker_authVersion');
-        var CURRENT_VERSION = '1';  // Change this number to revoke all access
-        if (storedAuth === 'true' && storedDeviceID === deviceID && storedVersion === CURRENT_VERSION) {
-          overlay.style.display = 'none';
-          return;
-        } else {
+        if (storedAuth === 'whitelist' || storedAuth === 'true') {
           localStorage.removeItem('punchTracker_deviceAuth');
           localStorage.removeItem('punchTracker_deviceID');
           localStorage.removeItem('punchTracker_authVersion');
         }
+      } catch(e) {}
+      try {
+        var storedAuth2 = localStorage.getItem('punchTracker_deviceAuth');
         var storedDeviceID = localStorage.getItem('punchTracker_deviceID');
-        if (storedAuth === 'true' && storedDeviceID === deviceID) {
+        var storedVersion = localStorage.getItem('punchTracker_authVersion');
+        var CURRENT_VERSION = '1';
+        if (storedAuth2 === 'password' && storedDeviceID === deviceID && storedVersion === CURRENT_VERSION) {
           overlay.style.display = 'none';
           return;
-        } else {
-          // Clear old auth if device ID doesn't match or was removed from whitelist
+        } else if (storedAuth2) {
           localStorage.removeItem('punchTracker_deviceAuth');
           localStorage.removeItem('punchTracker_deviceID');
+          localStorage.removeItem('punchTracker_authVersion');
         }
       } catch(e) {}
       if (idDisplay) idDisplay.textContent = deviceID;
@@ -2383,13 +2377,14 @@ BIOMETRIC
       overlay.appendChild(passwordSection);
     })();
 
+
     function adminUnlock() {
       var input = document.getElementById('adminPasswordInput');
       var errorEl = document.getElementById('adminError');
       if (!input) return;
       if (input.value === ADMIN_PASSWORD) {
         try {
-          localStorage.setItem('punchTracker_deviceAuth', 'true');
+          localStorage.setItem('punchTracker_deviceAuth', 'password');
           localStorage.setItem('punchTracker_deviceID', generateDeviceID());
           localStorage.setItem('punchTracker_authVersion', '1');
         } catch(e) {}
@@ -4597,7 +4592,3 @@ document.addEventListener('keydown', function(e) {
 
 </body>
 </html>
-
-
-
-
