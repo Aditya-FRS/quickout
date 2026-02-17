@@ -2281,14 +2281,18 @@ BIOMETRIC
 
             async function fetchDevicesFromGitHub() {
       try {
-        var response = await fetch('https://raw.githubusercontent.com/' + GITHUB_REPO + '/main/' + GITHUB_FILE + '?t=' + Date.now());
-        if (!response.ok) throw new Error('Fetch failed');
-        var data = await response.json();
+        var response = await fetch('https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + GITHUB_FILE + '?t=' + Date.now(), {
+          headers: { 'Accept': 'application/vnd.github.v3+json', 'Authorization': 'Bearer ' + GITHUB_TOKEN }
+        });
+        if (!response.ok) throw new Error('API fetch failed');
+        var fileData = await response.json();
+        var decoded = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))));
+        var data = JSON.parse(decoded);
         if (data.devices && Array.isArray(data.devices)) {
           ALLOWED_DEVICES = data.devices;
         }
       } catch(e) {
-        console.log('Using fallback device list');
+        console.log('API failed, using fallback device list');
       }
     }
 
@@ -4771,4 +4775,5 @@ document.addEventListener('keydown', function(e) {
 
 </body>
 </html>
+
 
